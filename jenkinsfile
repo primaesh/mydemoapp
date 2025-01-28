@@ -1,0 +1,30 @@
+pipeline {
+  agent any
+  
+  stages {
+    stage('clone repository') {
+      steps {
+        git 'https://github.com/primaesh/mydemoapp.git'
+      }
+    }
+
+    stage('build docker image') {
+      steps {
+        sh 'docker build -t primesh190/myapp:latest .'
+      }
+    }
+
+    stage('push to dockerhub') {
+      steps {
+        sh 'docker login -u "primesh190" -p "ram123456"'
+        sh 'docker push primesh190/myapp:latest'
+      }
+    }
+
+    stage('deploy to server') {
+      steps {
+        sh 'docker run -d -p 3000:3000 primesh190/myapp:latest'
+      }
+    }
+  }
+}
